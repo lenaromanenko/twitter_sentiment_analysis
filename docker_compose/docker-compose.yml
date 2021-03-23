@@ -1,0 +1,51 @@
+version: '3'
+
+services:
+
+# 1. Container: 'Tweet Collector'
+  tweet_collector:
+    build: tweet_collector/
+    volumes:
+    - ./tweet_collector/:/app
+    depends_on:
+    - mongodb
+  
+# 2. Container: 'Mongo DB'
+  mongodb:
+    image: mongo
+    ports:
+    - 1420:27017 
+
+# 3. Container: 'Postgres'
+  postgresdb:
+    image: postgres
+    ports:
+    - "5555:5432"
+    environment:
+    - POSTGRES_USER=lena
+    - POSTGRES_PASSWORD=1234
+    - POSTGRES_DB=tweets
+
+# 4. Container: 'ETL'
+  etl_job:
+    container_name: etl_job
+    build: etl_job/
+    volumes:
+    - ./etl_job/:/app
+    depends_on:
+    - mongodb
+    - postgresdb
+
+
+# 5. Container: 'Slackbot'
+  slack_bot:
+    container_name: slack_bot
+    build: slackbot/
+    volumes:
+    - ./slackbot/:/app
+    depends_on:
+    - postgresdb
+    environment:
+    - WEBHOOK_URL='https://hooks.slack.com/services/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'
+
+
