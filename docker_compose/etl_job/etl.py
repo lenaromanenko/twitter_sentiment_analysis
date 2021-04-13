@@ -3,7 +3,7 @@ import time
 from sqlalchemy import create_engine
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
-s  = SentimentIntensityAnalyzer()
+s = SentimentIntensityAnalyzer()
 
 time.sleep(10)  # seconds
 
@@ -22,7 +22,7 @@ collection = db.tweet_data
 entries = collection.find(limit=10000)
 
 # Store the results in Postgres:
-pg = create_engine('postgres://lena:1234@postgresdb:5432/tweets', echo=True)
+pg = create_engine('postgresql://lena:POSTGRES_PASSWORD@postgresdb:5432/tweets', echo=True)
 
 pg.execute('''
    CREATE TABLE IF NOT EXISTS tweets (

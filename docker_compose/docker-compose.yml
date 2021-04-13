@@ -9,6 +9,11 @@ services:
     - ./tweet_collector/:/app
     depends_on:
     - mongodb
+    environment:
+    - API_KEY=${API_KEY}
+    - API_SECRET=${API_SECRET}
+    - ACCESS_TOKEN=${ACCESS_TOKEN}
+    - ACCESS_TOKEN_SECRET=${ACCESS_TOKEN_SECRET}
   
 # 2. Container: 'Mongo DB'
   mongodb:
@@ -23,8 +28,9 @@ services:
     - "5555:5432"
     environment:
     - POSTGRES_USER=lena
-    - POSTGRES_PASSWORD=1234
+    - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     - POSTGRES_DB=tweets
+  
 
 # 4. Container: 'ETL'
   etl_job:
@@ -45,7 +51,10 @@ services:
     - ./slackbot/:/app
     depends_on:
     - postgresdb
+    - etl_job
+    - mongodb
+    - tweet_collector
     environment:
-    - WEBHOOK_URL='https://hooks.slack.com/services/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'
+    - WEBHOOK_URL=${WEBHOOK_URL}
 
 
